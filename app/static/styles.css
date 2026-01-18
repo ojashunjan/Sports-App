@@ -1,0 +1,204 @@
+/* ------------------------------
+   GLOBAL RESET & BASE THEME
+--------------------------------*/
+:root {
+    --bg: #0f0f0f;
+    --bg-alt: #141414;
+    --card-bg: rgba(255, 255, 255, 0.06);
+    --card-border: rgba(255, 255, 255, 0.12);
+    --text: #ffffff;
+    --text-muted: #bbbbbb;
+    --accent: #4ADE80; /* green */
+    --danger: #ef4444;
+    --shadow: 0 8px 24px rgba(0,0,0,0.45);
+    --blur: 14px;
+    --radius: 18px;
+    --transition: 0.25s ease;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", sans-serif;
+    padding-bottom: 60px;
+}
+
+/* Smooth animations everywhere */
+* {
+    transition: var(--transition);
+}
+
+/* ------------------------------
+   CONTAINERS & PAGE LAYOUT
+--------------------------------*/
+.container, .content-wrapper {
+    background: var(--card-bg);
+    backdrop-filter: blur(var(--blur));
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 25px 32px;
+    margin-top: 24px;
+    box-shadow: var(--shadow);
+}
+
+/* ------------------------------
+   HEADINGS
+--------------------------------*/
+h1, h2, h3 {
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+/* subtle glowing accent */
+h1, h2 {
+    color: var(--accent);
+    text-shadow: 0 0 12px rgba(74, 222, 128, 0.35);
+}
+
+/* ------------------------------
+   FORMS
+--------------------------------*/
+input, select, textarea {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: var(--text);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
+
+/* ------------------------------
+   BUTTONS
+--------------------------------*/
+.btn {
+    border-radius: var(--radius);
+    padding: 10px 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.btn-outline-success {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.btn-outline-success:hover {
+    background: var(--accent);
+    color: #000;
+}
+
+.btn-danger {
+    background: var(--danger);
+    border: none;
+}
+
+.btn-danger:hover {
+    background: #ff5e5e;
+}
+
+/* ------------------------------
+   NAVBAR
+--------------------------------*/
+.navbar {
+    background: rgba(0,0,0,0.55) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.navbar a {
+    color: var(--text);
+}
+
+.navbar a:hover {
+    color: var(--accent);
+}
+
+/* ------------------------------
+   TABLES
+--------------------------------*/
+table {
+    background: var(--card-bg);
+    backdrop-filter: blur(var(--blur));
+    border-radius: var(--radius);
+    border: 1px solid var(--card-border);
+}
+
+table th {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+table tr td {
+    color: var(--text-muted);
+}
+
+/* hover row effect */
+table tr:hover td {
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+}
+
+/* ------------------------------
+   CARDS (match cards, team cards, etc.)
+--------------------------------*/
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(var(--blur));
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    box-shadow: var(--shadow);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+/* team color badges */
+.badge {
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+/* ------------------------------
+   FLASH MESSAGES
+--------------------------------*/
+.alert {
+    border-radius: var(--radius);
+    filter: brightness(1.1);
+}
+
+/* ------------------------------
+   FLOATING ACTION BUTTON (FAB)
+--------------------------------*/
+.fab {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 50%;
+    width: 58px;
+    height: 58px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+}
+
+.fab:hover {
+    transform: scale(1.07);
+}

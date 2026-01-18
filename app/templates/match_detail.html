@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block content %}
+
+<a href="{{ url_for('index') }}" class="btn btn-outline-success mb-3">&larr; Back</a>
+
+<div class="glass-card mb-4">
+    <h2>Match #{{ match.id }} — {{ match.sport }}</h2>
+    <p>
+        Location: <strong>{{ match.location or 'TBD' }}</strong> •  
+        Stakes: <strong>${{ "%.2f"|format(match.stakes) }}</strong> • 
+        Status: <strong>{{ match.status }}</strong>
+    </p>
+    <p><strong>Teams:</strong> {{ match.team1.name if match.team1 else 'Open' }} vs {{ match.team2.name if match.team2 else 'Open' }}</p>
+
+    <form method="POST" action="{{ url_for('place_stake', match_id=match.id) }}" class="mt-3 d-flex gap-2">
+        <input type="number" step="0.01" name="amount" class="form-control w-25" placeholder="Stake amount" required>
+        <button type="submit" class="btn btn-outline-secondary">Place Stake</button>
+    </form>
+
+    <p class="mt-2">Total Stake: <strong>${{ match.stake }}</strong></p>
+</div>
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+        <div class="glass-card">
+            <h5>Player Pool</h5>
+            <ul class="list-group mt-2">
+            {% for p in pool %}
+                <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
+                    {{ p.name }} — {{ p.skill_rating }}
+                    {% if not locked %}
+                    <div>
+                        <button class="btn btn-sm btn-outline-success btn-assign" data-player-id="{{ p.id }}" data-side="A">A</button>
+                        <button class="btn btn-sm btn-outline-secondary btn-assign" data-player-id="{{ p.id }}" data-side="B">B</button>
+                    </div>
+                    {% endif %}
+                </li>
+            {% else %}
+                <li class="list-group-item text-muted">No players in pool</li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="glass-card">
+            <h5>Team A</h5>
+            <ul class="list-group mt-2">
+                {% for p in assigned_a %}
+                <li class="list-group-item bg-dark text-white">
+                    {{ p.name }} — {{ p.skill_rating }}
+                    {% if not locked %}
+                    <button class="btn btn-sm btn-danger btn-remove float-end" data-player-id="{{ p.id }}">Remove</button>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="glass-card">
+            <h5>Team B</h5>
+            <ul class="list-group mt-2">
+                {% for p in assigned_b %}
+                <li class="list-group-item bg-dark text-white">
+                    {{ p.name }} — {{ p.skill_rating }}
+                    {% if not locked %}
+                    <button class="btn btn-sm btn-danger btn-remove float-end" data-player-id="{{ p.id }}">Remove</button>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-4 d-flex gap-2">
+    {% if not locked %}
+        <button id="btn-balance" class="btn btn-outline-success">Auto-balance</button>
+        <button id="btn-shuffle" class="btn btn-outline-secondary">Shuffle</button>
+        <button id="btn-lock" class="btn btn-success">Lock Match</button>
+    {% else %}
+        <button id="btn-lock" class="btn btn-warning">Unlock Match</button>
+    {% endif %}
+</div>
+
+<form method="post" action="{{ url_for('join_open_match', match_id=match.id, team_id=0) }}" id="join-team-form" style="display:none"></form>
+
+<script>
+async function postForm(url, data) {
+    const res = await fetch(url, { method: 'POST', body: new URLSearchParams(data) });
+    return res.json();
+}
+
+// Auto-balance
+document.getElementById('btn-balance')?.addEventListener('click', async () => {
+  const res = await fetch(`/matches/{{ match.id }}/auto_balance`, { method:'POST' });
+  location.reload();
+});
+
+// Shuffle
+document.getElementById('btn-shuffle')?.addEventListener('click', async () => {
+  const res = await fetch(`/matches/{{ match.id }}/shuffle`, { method:'POST' });
+  location.reload();
+});
+
+// Lock/unlock
+document.getElementById('btn-lock')?.addEventListener('click', async () => {
+  const res = await fetch(`/matches/{{ match.id }}/toggle_lock`, { method:'POST' });
+  location.reload();
+});
+
+// Assign player
+document.querySelectorAll('.btn-assign').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        await postForm(`/matches/{{ match.id }}/assign`, {
+            player_id: btn.dataset.playerId,
+            team_side: btn.dataset.side
+        });
+        location.reload();
+    });
+});
+
+// Remove player
+document.querySelectorAll('.btn-remove').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        await postForm(`/matches/{{ match.id }}/assign`, {
+            player_id: btn.dataset.playerId,
+            remove: 1
+        });
+        location.reload();
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+<!-- somewhere in your dashboard tab content -->
+<div class="card p-4 mt-4 bg-dark text-white rounded">
+  <h5>Suggested Opponents</h5>
+  {% if opponents %}
+    <ul>
+      {% for opp in opponents %}
+        <li>{{ opp.name }} — Skill Rating: {{ opp.skill_rating }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No suggestions available yet.</p>
+  {% endif %}
+  <h5 class="mt-3">Recommended Venues</h5>
+  {% if suggested_venues %}
+    <ul>
+      {% for v in suggested_venues %}
+        <li>{{ v.name }} ({{ v.city or '' }})</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No venues available yet.</p>
+  {% endif %}
+</div>

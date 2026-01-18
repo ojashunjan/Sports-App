@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Edit Player: {{ player.name }}</h3>
+
+    <form method="POST" action="{{ url_for('edit_player', player_id=player.id) }}">
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input class="form-control" name="name" value="{{ player.name }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control" name="email" value="{{ player.email or '' }}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Role / Position</label>
+            <input class="form-control" name="role" value="{{ player.role or '' }}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Legacy Skill Rating (optional)</label>
+            <input type="number" class="form-control" name="skill_rating" value="{{ player.skill_rating or 50}}">
+            <div class="form-text">If provided, this is used as fallback when no sport-specific skills exist.</div>
+        </div>
+
+        <hr>
+        <h5>Sport Skills {% if team %} ({{ team.sport }}) {% endif %}</h5>
+        <div class="row g-2">
+            {% for skill_name in skill_names %}
+            <div class="col-md-3 mb-2">
+                <label class="form-label small">{{ skill_name }}</label>
+                <input type="number" class="form-control" min="0" max="999"
+                       name="skill_{{ skill_name.replace(' ', '_') }}"
+                       value="{{ existing_skills.get(skill_name, '') }}">
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-3">
+            <button class="btn btn-primary" type="submit">Save</button>
+            {% if team %}
+            <a class="btn btn-secondary" href="{{ url_for('team_detail', team_id=team.id) }}">Back to Team</a>
+            {% else %}
+            <a class="btn btn-secondary" href="{{ url_for('index') }}">Back</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

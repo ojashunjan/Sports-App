@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Register Team</h2>
+
+<form method="post" class="mb-4">
+  <div class="mb-2">
+    <input class="form-control" name="name" placeholder="Team name" required>
+  </div>
+
+  <div class="mb-2">
+    <input class="form-control" name="email" placeholder="Email" required>
+  </div>
+
+  <div class="mb-2">
+    <input type="password" class="form-control" name="password" placeholder="Password" required>
+  </div>
+
+  <div class="mb-2">
+    <input class="form-control" name="color" placeholder="Team color (CSS name)">
+  </div>
+
+  <div class="mb-2">
+    <input class="form-control" name="skill" placeholder="Team skill rating (default 50)">
+  </div>
+
+  <div class="mb-2">
+    <select class="form-select" name="sport" required>
+      <option value="">Select sport</option>
+      <option value="soccer">Soccer</option>
+      <option value="basketball">Basketball</option>
+      <option value="hockey">Hockey</option>
+      <option value="volleyball">Volleyball</option>
+      <option value="cricket">Cricket</option>
+    </select>
+  </div>
+
+  <div class="mb-2">
+    <input class="form-control" name="captain_name" placeholder="Captain name (optional)">
+  </div>
+
+  <button class="btn btn-outline-success">Register</button>
+  <a class="btn btn-secondary" href="{{ url_for('index') }}">Cancel</a>
+</form>
+
+{% endblock %}

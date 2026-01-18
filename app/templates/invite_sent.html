@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+{% if invite %}
+  <h4>Invite created for {{ team.name if team else '' }}</h4>
+  <p>Share this link with the invitee:</p>
+  <pre>{{ accept_url }}</pre>
+  <p>Or copy token: <code>{{ invite.token }}</code></p>
+  <a class="btn btn-primary" href="{{ url_for('index') }}">Back</a>
+{% else %}
+  <h4>Create an Invite</h4>
+  <form method="post">
+    <div class="mb-2"><input class="form-control" name="name" placeholder="Invited person name (optional)"></div>
+    <div class="mb-2"><input class="form-control" name="email" placeholder="Email (optional)"></div>
+    <button class="btn btn-outline-primary">Create Invite</button>
+    <a class="btn btn-secondary" href="{{ url_for('team_detail', team_id=team.id) }}">Cancel</a>
+  </form>
+{% endif %}
+{% endblock %}

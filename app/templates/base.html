@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Smart Sports</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+        background: linear-gradient(135deg, #0f1115, #1a1d24);
+        color: #eaeaea;
+        min-height: 100vh;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .navbar {
+        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.05) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.4rem;
+        color: #90ee90 !important;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+    }
+
+    .btn-outline-success,
+    .btn-outline-secondary,
+    .btn-outline-primary {
+        border-radius: 10px;
+        transition: 0.2s;
+    }
+
+    .btn-outline-success:hover {
+        background: rgba(0, 255, 140, 0.1);
+        color: #00ff8c;
+    }
+
+    .btn-outline-secondary:hover {
+        background: rgba(150, 150, 150, 0.1);
+    }
+
+    .btn-outline-primary:hover {
+        background: rgba(100, 150, 255, 0.1);
+    }
+
+    .card {
+        border-radius: 16px !important;
+        background: rgba(255, 255, 255, 0.07) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 0 3px 18px rgba(0,0,0,0.4) !important;
+    }
+
+    table {
+        color: #eaeaea !important;
+    }
+  </style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg mb-4 shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">Smart Sports</a>
+
+    <div class="admin-login-container">
+      <a href="{{ url_for('admin_login') }}" class="btn btn-sm btn-outline-success">⚙️ Admin Login</a>
+    </div>
+
+    <a class="btn btn-outline-primary ms-2" href="{{ url_for('free_agents') }}">Free Agents</a>
+
+
+    <div class="ms-auto d-flex gap-2">
+      <a class="btn btn-outline-success" href="{{ url_for('register') }}">Create Team</a>
+      <a class="btn btn-outline-success" href="{{ url_for('create_match') }}">Create Match</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ 'info' if cat=='info' else cat }} alert-dismissible fade show glass-card">
+          {{ msg }}
+          <button class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

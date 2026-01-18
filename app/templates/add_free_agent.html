@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Add Yourself to Free Agent Pool</h2>
+
+<form method="post" class="mb-4">
+
+  <div class="mb-3">
+    <label>Name</label>
+    <input class="form-control" name="name" required>
+  </div>
+
+  <div class="mb-3">
+    <label>Sport</label>
+    <select class="form-select" name="sport" required>
+      <option value="">Select sport</option>
+      <option>Soccer</option>
+      <option>Basketball</option>
+      <option>Hockey</option>
+      <option>Volleyball</option>
+      <option>Cricket</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label>Age (optional)</label>
+    <input class="form-control" name="age" type="number">
+  </div>
+
+  <div class="mb-3">
+    <label>Position (optional)</label>
+    <input class="form-control" name="position">
+  </div>
+
+  <button class="btn btn-primary">Join Free Agents</button>
+  <a href="{{ url_for('free_agents') }}" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+{% endblock %}

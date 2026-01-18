@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h3>File dispute for Match #{{ match.id }}</h3>
+    <form method="POST">
+        <div class="mb-2">
+            <label>Filed by (player id)</label>
+            <select name="filed_by_id" class="form-select">
+                {% for p in players %}
+                <option value="{{ p.id }}">{{ p.name }} (id={{ p.id }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Reason</label>
+            <textarea name="reason" class="form-control" required></textarea>
+        </div>
+        <button class="btn btn-danger">Submit Dispute</button>
+    </form>
+</div>
+{% endblock %}

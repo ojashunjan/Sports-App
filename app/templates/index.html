@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="mb-3">Dashboard</h1>
+
+<a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+<a href="{{ url_for('register') }}" class="btn btn-outline-success">Register Team</a>
+
+
+<div class="row">
+  <div class="col-md-6">
+    <h4>Teams</h4>
+    <div class="list-group">
+      {% for t in teams %}
+        <a class="list-group-item list-group-item-action" href="{{ url_for('team_detail', team_id=t.id) }}">
+          <strong>{{ t.name }}</strong> <small class="text-muted">({{ t.color or 'no color' }})</small>
+          <div>Players: {{ t.players|length }} • Rating: {{ t.skill_rating }}</div>
+        </a>
+      {% else %}
+        <div class="text-muted">No teams yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <h4>Matches</h4>
+    <ul class="list-group mb-3">
+      {% for m in matches %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ m.sport }}</strong> • {{ m.location or 'TBD' }}
+          <div class="small">Team1: {{ m.team1.name if m.team1 else 'Open' }} — Team2: {{ m.team2.name if m.team2 else 'Open' }}</div>
+        </div>
+        <div>
+          <a class="btn btn-sm btn-outline-success" href="{{ url_for('match_detail', match_id=m.id) }}">Open</a>
+          {% if (not m.team1_id) or (not m.team2_id) %}
+            <span class="badge bg-warning text-dark">Open challenge</span>
+          {% endif %}
+        </div>
+      </li>
+      {% else %}
+        <li class="list-group-item">No matches yet.</li>
+      {% endfor %}
+    </ul>
+
+    <h5>Open matches</h5>
+    <ul class="list-group">
+      {% for om in open_matches %}
+        <li class="list-group-item d-flex justify-content-between">
+          <div>{{ om.sport }} — {{ om.location or 'TBD' }}</div>
+          <a class="btn btn-sm btn-outline-success" href="{{ url_for('match_detail', match_id=om.id) }}">View</a>
+        </li>
+      {% else %}
+        <li class="list-group-item text-muted">No open matches</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

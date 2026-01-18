@@ -1,0 +1,46 @@
+    {% extends "base.html" %}
+    {% block content %}
+    <div class="container mt-4 text-white">
+    <h2>{{ player.name }}</h2>
+    {% if team %}
+        <p>Team: {{ team.name }}</p>
+    {% endif %}
+    <p>Matches Played: {{ matches_played }}</p>
+    <p>Wins: {{ wins }}</p>
+    <p>Win Rate: {{ win_rate|round(2) }}%</p>
+    <p>Skill Rating: {{ avg_skill|round(0) }}</p>
+
+    <canvas id="progressChart" height="100" class="mt-4"></canvas>
+
+    <div class="card bg-dark text-white p-4 mt-4">
+        <h4>AI Performance Insights 🧠</h4>
+        <pre>{{ ai_tips }}</pre>
+    </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    // Example data: you may want to build real history
+    const data = {
+    labels: ['Start', 'Current'],
+    datasets: [{
+        label: 'Skill Rating Progress',
+        data: [800, {{ avg_skill|round(0) }}],
+        borderColor: '#4bc0c0',
+        fill: false,
+        tension: 0.3
+    }]
+    };
+    new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+        scales: {
+        y: { beginAtZero: false }
+        }
+    }
+    });
+    </script>
+    {% endblock %}

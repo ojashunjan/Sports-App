@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Create Match</h2>
+<form method="post" class="mb-4">
+  <div class="mb-2"><input class="form-control" name="sport" placeholder="Sport" /></div>
+  <div class="mb-2"><input class="form-control" name="location" placeholder="Location" /></div>
+  <div class="mb-2"><input class="form-control" name="date" placeholder="YYYY-MM-DDTHH:MM:SS" /></div>
+  <div class="mb-2">
+    <select class="form-select" name="team1_id" id="team1_select" onchange="filterTeam2Options()">
+      <option value="">Select Team 1 (optional)</option>
+      {% for t in teams %}<option value="{{ t.id }}" data-sport="{{ t.sport }}">{{ t.name }}{% if t.sport %} — {{ t.sport }}{% endif %}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="mb-2">
+    <select class="form-select" name="team2_id" id="team2_select">
+      <option value="">Select Team 2</option>
+      {% for t in teams %}<option value="{{ t.id }}" data-sport="{{ t.sport }}">{{ t.name }}{% if t.sport %} — {{ t.sport }}{% endif %}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="mb-2"><input class="form-control" name="stakes" placeholder="Stakes (CAD)"></div>
+  <button class="btn btn-success">Create Match</button>
+  <a class="btn btn-secondary" href="{{ url_for('index') }}">Cancel</a>
+</form>
+
+<script>
+function filterTeam2Options(){
+  const team1 = document.getElementById('team1_select');
+  const team2 = document.getElementById('team2_select');
+  const selectedOption = team1.options[team1.selectedIndex];
+  const selectedSport = selectedOption ? selectedOption.getAttribute('data-sport') : null;
+
+  for (let i = 0; i < team2.options.length; i++) {
+    const opt = team2.options[i];
+    const optSport = opt.getAttribute('data-sport');
+    // keep the empty option visible always
+    if (!opt.value) {
+      opt.hidden = false;
+      continue;
+    }
+    if (selectedSport && optSport && optSport !== selectedSport) {
+      opt.hidden = true;
+    } else {
+      opt.hidden = false;
+    }
+  }
+  // clear team2 selection when team1 changes
+  team2.value = "";
+}
+</script>
+{% endblock %}

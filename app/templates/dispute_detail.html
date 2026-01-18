@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h3>Dispute #{{ dispute.id }} — Match #{{ dispute.match.id }}</h3>
+    <p><strong>Filed by:</strong> {{ dispute.filed_by.name }} (id={{ dispute.filed_by.id }})</p>
+    <p><strong>Reason:</strong> {{ dispute.reason }}</p>
+    <p><strong>Status:</strong> {{ dispute.status }}</p>
+
+    <form method="POST" action="{{ url_for('admin_resolve_dispute', dispute_id=dispute.id) }}">
+        <div class="mb-2">
+            <label>Resolution note</label>
+            <input name="resolution" class="form-control">
+        </div>
+        <div class="mb-2">
+            <button name="action" value="approve" class="btn btn-success">Resolve in favor of filer</button>
+            <button name="action" value="dismiss" class="btn btn-secondary">Dismiss</button>
+            <button name="action" value="void_match" class="btn btn-warning">Void Match</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

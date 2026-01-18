@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><title>Balanced Teams</title></head>
+<body>
+    <h1>Balanced/Shuffle Teams</h1>
+    <h2>Team 1</h2>
+    <ul>
+    {% for p in team1 %}
+        <li>{{ p.name }} (Skill: {{ p.skill }})</li>
+    {% endfor %}
+    </ul>
+
+    <h2>Team 2</h2>
+    <ul>
+    {% for p in team2 %}
+        <li>{{ p.name }} (Skill: {{ p.skill }})</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

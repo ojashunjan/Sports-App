@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Accept Invite</h3>
+<p>Invite context: {{ invite.context_type }} #{{ invite.context_id }}</p>
+<form method="post">
+  <div class="mb-2"><input class="form-control" name="name" placeholder="Your name" required></div>
+  <div class="mb-2"><input class="form-control" name="email" placeholder="Email (optional)"></div>
+  <button class="btn btn-success">Accept Invite</button>
+  <a class="btn btn-secondary" href="{{ url_for('index') }}">Cancel</a>
+</form>
+{% endblock %}

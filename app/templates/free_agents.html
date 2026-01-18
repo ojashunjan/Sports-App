@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="mb-3">Free Agent Pool</h2>
+
+<a href="{{ url_for('add_free_agent') }}" class="btn btn-primary mb-3">
+  Add Yourself to Free Agent Pool
+</a>
+
+<table class="table table-striped table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th>Name</th>
+      <th>Sport</th>
+      <th>Age</th>
+      <th>Position</th>
+      <th>Move to Team</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in players %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.sport }}</td>
+        <td>{{ p.age or "N/A" }}</td>
+        <td>{{ p.position or "N/A" }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('move_free_agent', player_id=p.id) }}">
+            <select name="team_id" class="form-select form-select-sm mb-1">
+              {% for t in Team.query.all() %}
+                {% if t.name != "Free Agent Pool" %}
+                  <option value="{{ t.id }}">{{ t.name }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+            <button class="btn btn-sm btn-success">Move</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

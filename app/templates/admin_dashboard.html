@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Smart Sports Platform</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+    body {
+        background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
+        color: #f8f9fa;
+        font-family: 'Poppins', sans-serif;
+        min-height: 100vh;
+    }
+
+    .navbar {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        backdrop-filter: blur(8px);
+        color: white;
+        margin-top: 20px;
+    }
+
+    .table {
+        color: white;
+    }
+
+    .table thead {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn {
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .team-stats {
+        font-size: 0.85rem;
+        color: #00ffcc;
+        margin-top: 4px;
+    }
+
+    /* Enhanced Stake Colors */
+    .stake-low {
+        color: #00ff99; /* bright green */
+        font-weight: 600;
+        text-shadow: 0 0 5px #00ff99;
+    }
+    .stake-medium {
+        color: #ffeb3b; /* neon yellow */
+        font-weight: 600;
+        text-shadow: 0 0 5px #ffeb3b;
+    }
+    .stake-high {
+        color: #ffa726; /* deep orange */
+        font-weight: 600;
+        text-shadow: 0 0 5px #ff9100;
+    }
+    .stake-very-high {
+        color: #ff4d4d; /* bright red */
+        font-weight: 700;
+        text-shadow: 0 0 8px #ff0000, 0 0 12px #ff4d4d;
+    }
+</style>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark px-4">
+    <a class="navbar-brand fw-bold" href="#">⚙️ Admin Dashboard</a>
+    <div class="ms-auto">
+        <a href="/" class="btn btn-outline-light btn-sm">Back to Site</a>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#matches">Matches</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#players">Players</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#disputes">Disputes</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#settings">Settings</button></li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- Matches Tab -->
+        <div class="tab-pane fade show active" id="matches">
+            <div class="card p-4">
+                <h5>All Matches</h5>
+                <table class="table table-hover mt-3 align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Teams</th>
+                            <th>Stats</th>
+                            <th>Sport</th>
+                            <th>Stakes</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for match in matches %}
+                        <tr>
+                            <td>{{ match.id }}</td>
+                            <td>
+                                <strong>{{ match.team1.name }}</strong> vs <strong>{{ match.team2.name }}</strong>
+                                <div class="team-stats">
+                                    <span>{{ match.team1.matches_played or 0 }}P / {{ match.team1.matches_won or 0 }}W / {{ match.team1.matches_lost or 0 }}L</span>
+                                    <br>
+                                    <span>{{ match.team2.matches_played or 0 }}P / {{ match.team2.matches_won or 0 }}W / {{ match.team2.matches_lost or 0 }}L</span>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td>{{ match.sport }}</td>
+                            <td class="stake-value">${{ match.stakes }}</td>
+                            <td>{{ match.status }}</td>
+                            <td>
+                                {% if match.status != "completed" %}
+                                <!-- Team 1 Wins -->
+                                <form method="POST" action="{{ url_for('admin_set_match_result', match_id=match.id) }}" style="display:inline-block;">
+                                    <input type="hidden" name="winner_team_id" value="{{ match.team1.id }}">
+                                    <button type="submit" class="btn btn-success btn-sm">Team 1 Wins</button>
+                                </form>
+                                <!-- Team 2 Wins -->
+                                <form method="POST" action="{{ url_for('admin_set_match_result', match_id=match.id) }}" style="display:inline-block;">
+                                    <input type="hidden" name="winner_team_id" value="{{ match.team2.id }}">
+                                    <button type="submit" class="btn btn-success btn-sm">Team 2 Wins</button>
+                                </form>
+                                <!-- Optional Draw -->
+                                <form method="POST" action="{{ url_for('admin_set_match_result', match_id=match.id) }}" style="display:inline-block;">
+                                    <input type="hidden" name="winner_team_id" value="0">
+                                    <button type="submit" class="btn btn-warning btn-sm">Draw</button>
+                                </form>
+
+                                <!-- NEW PAYOUT DISTRIBUTION FORM -->
+                                <form method="POST" action="{{ url_for('mark_result', match_id=match.id) }}" class="mt-3 p-2 bg-dark rounded">
+                                    <label class="form-label small text-light">Select Winner & Payout Mode</label>
+                                    <select name="winner_id" class="form-select form-select-sm mb-2 bg-transparent text-light">
+                                        {% for team in [match.team1, match.team2] %}
+                                        <option value="{{ team.id }}">{{ team.name }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <select name="payout_mode" class="form-select form-select-sm mb-2 bg-transparent text-light">
+                                        <option value="winner_takes_all">Winner Takes All</option>
+                                        <option value="ranked_split">Ranked Split</option>
+                                        <option value="mvp_bonus">MVP Bonus</option>
+                                    </select>
+
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">Mark Result & Distribute</button>
+                                </form>
+                                {% else %}
+                                <span class="text-muted">Completed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="7" class="text-center text-muted">No matches available.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Players Tab -->
+        <div class="tab-pane fade" id="players">
+            <div class="card p-4">
+                <h5>Players</h5>
+                <table class="table table-hover mt-3 align-middle">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Team</th>
+                            <th>Skill Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player in players %}
+                        <tr>
+                            <td>{{ player.name }}</td>
+                            <td>{{ player.email }}</td>
+                            <td>{{ player.team.name if player.team else "Free Agent" }}</td>
+                            <td>{{ player.skill_rating }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" class="text-center text-muted">No players found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Disputes Tab -->
+        <div class="tab-pane fade" id="disputes">
+            <div class="card p-4">
+                <h5>Disputes</h5>
+                <table class="table table-hover mt-3 align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Match</th>
+                            <th>Details</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dispute in disputes %}
+                        <tr>
+                            <td>{{ dispute.id }}</td>
+                            <td>{{ dispute.match_id }}</td>
+                            <td>{{ dispute.reason }}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm">Review</button>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" class="text-center text-muted">No disputes filed.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="tab-pane fade" id="settings">
+            <div class="card p-4">
+                <h5>Platform Settings</h5>
+                <form method="POST" action="/admin/update-settings">
+                    <div class="mb-3">
+                        <label class="form-label">Default Betting Amount</label>
+                        <input type="number" name="default_stake" value="{{ settings.default_stake if settings else 0 }}" class="form-control bg-transparent text-white">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payout Multiplier</label>
+                        <input type="number" step="0.1" name="payout_multiplier" value="{{ settings.payout_multiplier if settings else 1.5 }}" class="form-control bg-transparent text-white">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.querySelectorAll('.stake-value').forEach(cell => {
+    const amount = parseFloat(cell.textContent.replace(/[^0-9.]/g, '')) || 0;
+    if (amount > 1000) cell.classList.add('stake-very-high');
+    else if (amount >= 500) cell.classList.add('stake-high');
+    else if (amount >= 100) cell.classList.add('stake-medium');
+    else cell.classList.add('stake-low');
+});
+</script>
+</body>
+</html>
